@@ -34,8 +34,6 @@ function App() {
 
   const prepareSubmit = (data) => {
 
-    console.log(data);
-
     if (data.spiciness_scale !== undefined) data.spiciness_scale = parseInt(data.spiciness_scale);
     if (data.no_of_slices !== undefined) data.no_of_slices = parseInt(data.no_of_slices);
     if (data.diameter !== undefined) data.diameter = parseFloat(data.diameter);
