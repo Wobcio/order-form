@@ -8,6 +8,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import Typography from '@mui/material/Typography';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
+import Opt from './Opt';
 
 const theme = createTheme({
   status: {
@@ -100,6 +101,7 @@ function App() {
                 <MenuItem value={'sandwich'}>Sandwich</MenuItem>
               </Select>
             </FormControl>
+            <Opt pickedDish={dish} />
             <Button
               type="submit"
               fullWidth
