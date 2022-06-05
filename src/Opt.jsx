@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import NumericInput from 'material-ui-numeric-input';
 
 
-const Opt = ({pickedDish}) =>{
+const Opt = ({pickedDish, register}) =>{
     
 
     if (pickedDish === 'pizza') {
@@ -18,6 +18,9 @@ const Opt = ({pickedDish}) =>{
                     type="number"
                     inputProps= {{ min: 1 }}
                     autoFocus
+                    {...register("no_of_slices", {
+                        required: true,
+                      })}
                 />
                 
                 <NumericInput
@@ -29,6 +32,9 @@ const Opt = ({pickedDish}) =>{
                     thousandChar='.'
                     label='Diameter'
                     variant='outlined'
+                    inputProps= {{...register("diameter", {
+                        required: true,
+                      })}}
                 />
             </div>
         )
@@ -47,6 +53,9 @@ const Opt = ({pickedDish}) =>{
                     max={10}
                     marks
                     aria-labelledby="spiciness-slider"
+                    {...register("spiciness_scale", {
+                        required: true,
+                      })}
                 />
             </Box>
         )
@@ -63,6 +72,9 @@ const Opt = ({pickedDish}) =>{
                 type="number"
                 InputProps={{ inputProps: { min: 1 } }}
                 autoFocus
+                {...register("slices_of_bread", {
+                    required: true,
+                  })}
             />    
         )
     }

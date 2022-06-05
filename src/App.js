@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Opt from './Opt';
+import { useForm } from 'react-hook-form';
 
 const theme = createTheme({
   status: {
@@ -28,23 +29,45 @@ const theme = createTheme({
 
 function App() {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      preparation_time: data.get('preparation_time'),
-      type: data.get('type')
-    });
+  const { register, unregister, handleSubmit } = useForm();
+
+
+  const prepareSubmit = (data) => {
+
+    console.log(data);
+
+    if (data.spiciness_scale !== undefined) data.spiciness_scale = parseInt(data.spiciness_scale);
+    if (data.no_of_slices !== undefined) data.no_of_slices = parseInt(data.no_of_slices);
+    if (data.diameter !== undefined) data.diameter = parseFloat(data.diameter);
+    if (data.slices_of_bread !== undefined) data.slices_of_bread = parseInt(data.slices_of_bread);
+
+  }
+
+  const onSubmit = async data => {
+
+    prepareSubmit(data);
+    
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
   };
+
+  const response = await fetch(['https://frosty-wood-6558.getsandbox.com/dishes'], requestOptions);
+  const jsonData = await response.json();
+
+  console.log(jsonData);
+  }
 
   const [dish, setDish] = React.useState('');
 
   const handleChangeDish = (event) => {
     setDish(event.target.value);
+    unregister("no_of_slices");
+    unregister("diameter");
+    unregister("spiciness_scale");
+    unregister("slices_of_bread");
   };
-
-
   
   return (
     <ThemeProvider theme={theme}>
@@ -64,7 +87,7 @@ function App() {
           <Typography component="h1" variant="h5">
             Set the order
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
             <TextField 
               margin="normal"
               required
@@ -73,6 +96,9 @@ function App() {
               label="Dish name"
               name="name"
               autoFocus
+              {...register("name", {
+                required: true,
+              })}
             />
             <TextField
               margin="normal"
@@ -85,6 +111,9 @@ function App() {
               id="duration"
               inputProps={{ step: "1", min: "0", max: "10" }}
               InputLabelProps={{ shrink: true }}
+              {...register("preparation_time", {
+                required: true,
+              })}
             />
             <FormControl fullWidth margin="normal">
               <InputLabel id="demo-simple-select-label">Dish</InputLabel>
@@ -95,13 +124,16 @@ function App() {
                 label="Dish Type"
                 name="type"
                 onChange={handleChangeDish}
+                inputProps= {{...register("type", {
+                  required: true,
+                })}}
               >
                 <MenuItem value={'soup'}>Soup</MenuItem>
                 <MenuItem value={'pizza'}>Pizza</MenuItem>
                 <MenuItem value={'sandwich'}>Sandwich</MenuItem>
               </Select>
             </FormControl>
-            <Opt pickedDish={dish} />
+            <Opt pickedDish={dish} register={register} />
             <Button
               type="submit"
               fullWidth
